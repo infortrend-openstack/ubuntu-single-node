@@ -1,0 +1,8 @@
+TODO:
+. Add Trace
+. Add Sleep in service restart
+. Add Final Output
+. Add Net-create
+. Add Cinder driver related to ift?
+. ovs-vsctl control ifdown and ifup handling
+. if virtualbox, have problem(ex:kvm=>qemu, glance image format ..etc)
