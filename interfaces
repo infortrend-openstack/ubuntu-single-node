@@ -1,0 +1,20 @@
+auto lo
+iface lo inet loopback
+
+auto br-ex
+iface br-ex inet static
+address your_ip
+netmask your_netmask
+gateway your_gateway
+dns-nameservers 8.8.8.8
+
+# The primary network interface
+#auto eth0
+#iface eth0 inet dhcp
+auto eth0
+iface eth0 inet manual
+   up ifconfig $IFACE 0.0.0.0 up
+   up ip link set $IFACE promisc on
+   down ip link set $IFACE promisc off
+   down ifconfig $IFACE down
+
