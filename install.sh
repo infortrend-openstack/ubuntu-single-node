@@ -47,16 +47,12 @@ rabbitmqctl change_password guest rabbit
 ## Install MySQL server and related software
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password '$mysql_pass''
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password '$mysql_pass''
-apt-get -y install mysql-server
-apt-get install -y python-mysqldb
+apt-get install -y mysql-server python-mysqldb
 
 ## Edit the following lines in /etc/mysql/my.cnf
 tempfile=/etc/mysql/my.cnf
 test -f $tempfile.orig || cp $tempfile $tempfile.orig
-rm $tempfile
-touch $tempfile
 sed -i 's/127.0.0.1/0.0.0.0/g' $tempfile
-
 sed -i "/bind-address/a\default-storage-engine = innodb\n\
 innodb_file_per_table\n\
 collation-server = utf8_general_ci\n\
@@ -82,7 +78,7 @@ sysctl -p
 apt-get install -y keystone
 
 ## Create mysql database and add credentials
-cat << EOF | mysql -uroot -p111111
+cat << EOF | mysql -uroot -p$mysql_pass
 DROP DATABASE IF EXISTS keystone;
 DROP DATABASE IF EXISTS glance;
 DROP DATABASE IF EXISTS nova;
@@ -345,7 +341,7 @@ neutron agent-list
 
 ## Cinder
 ## Install Cinder services
-apt-get install cinder-api cinder-scheduler cinder-volume lvm2 open-iscsi-utils open-iscsi iscsitarget sysfsutils
+apt-get install -y cinder-api cinder-scheduler cinder-volume lvm2 open-iscsi-utils open-iscsi iscsitarget sysfsutils
 
 ## Create Cinder related keystone entries
 keystone user-create --name=cinder --pass=cinder_pass --email=cinder@example.com
