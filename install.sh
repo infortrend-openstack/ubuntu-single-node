@@ -22,6 +22,9 @@ if [[ "$self_gateway" == "" ]]; then
     exit 0
 fi
 
+echo "------------------ Install related update and packaged ------------------"
+sleep 3
+
 #echo "Enter mysql password"
 #read mysql_pass
 mysql_pass=111111
@@ -36,12 +39,18 @@ apt-get update && apt-get -y upgrade
 ## Note: Reboot is needed only if kernel is updated
 #reboot 
 
+echo "------------------ Install RabiitMQ Server ------------------"
+sleep 3
+
 ## Support packages
 ## RaabitMQ server
 apt-get install -y rabbitmq-server
 
 ## Change Password for the user ‘guest’ in the rabbitmq-server
 rabbitmqctl change_password guest rabbit
+
+echo "------------------ Install MySQL Database Server ------------------"
+sleep 3
 
 ## MySQL server
 ## Install MySQL server and related softwa**re
@@ -64,6 +73,9 @@ service mysql restart
 
 sleep 5
 
+echo "------------------ Install Other Support Packages ------------------"
+sleep 3
+
 ## Other Support Packages
 apt-get install -y ntp vlan bridge-utils
 
@@ -75,9 +87,15 @@ echo "net.ipv4.conf.default.rp_filter=0" >> /etc/sysctl.conf
 ## Load the values
 sysctl -p
 
+echo "------------------ Install Keystone ------------------"
+sleep 3
+
 ## Keystone
 ## Install keystone
 apt-get install -y keystone
+
+echo "------------------ Add Needed DataBase in MySQL ------------------"
+sleep 3
 
 ## Create mysql database and add credentials
 cat << EOF | mysql -uroot -p$mysql_pass
@@ -166,6 +184,9 @@ source creds
 keystone token-get
 keystone user-list
 
+echo "------------------ Install Glance ------------------"
+sleep 3
+
 ## Glance (Image Store)
 ## Install Glance
 apt-get install -y glance
@@ -204,6 +225,9 @@ glance-manage db_sync
 ## Download a pre-bundled image for testing
 glance image-create --name Cirros --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
 glance image-list
+
+echo "------------------ Install Nova ------------------"
+sleep 3
 
 ## Nova(Compute)
 ## Install the Nova services
@@ -245,6 +269,9 @@ nova-manage service list
 
 ## Also run the following command to check if nova is able to authenticate with keystone server
 nova list
+
+echo "------------------ Install Neutron ------------------"
+sleep 3
 
 ## Neutron(Networking service)
 ## Install the Neutron services
@@ -331,6 +358,8 @@ neutron agent-list
 ## How neutron-l3-agent provides services like routing, natting, floatingIP and security groups
 ## See more of Linux networking capabilities
 
+echo "------------------ Install Cinder ------------------"
+sleep 3
 
 ## Cinder
 ## Install Cinder services
@@ -378,6 +407,9 @@ cinder list
 ## | e19242b5-8caf-4093-9b81-96d6bb1f7000 | available |   myVolume   |  1   |     None    |  false   |             |
 ## +--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
 
+echo "------------------ Install dashboard ------------------"
+sleep 3
+
 ## Horizon (OpenStack Dashboard)
 apt-get install -y openstack-dashboard
 
@@ -386,6 +418,8 @@ apt-get install -y openstack-dashboard
 ## Username: admin
 ## Password: ADMIN
 
+echo "------------------ Setup Network interfaces ------------------"
+sleep 3
 
 ## Edit /etc/network/interfaces
 tempfile=/etc/network/interfaces
@@ -408,10 +442,23 @@ echo "Please enter floating IP start from..(ex:192.168.1.200, 172.27.120.200)"
 read start_ip_addr
 echo "Please enter floating IP End in(ex:192.168.1.250, 172.27.120.250)"
 read end_ip_addr
+
+echo "------------------ Install Openstack Public/Private Network ------------------"
+sleep 3
+
+## create router
 neutron router-create router1
+
+## create private net
 neutron net-create private
 neutron subnet-create private 10.0.0.0/24 --name private_subnet
-neutron router-interface-add router1 private_subnet
+
+## create external net
 neutron net-create public --router:external=True
 neutron subnet-create public $ext_ip_addr --name public_subnet --enable_dhcp=False --allocation-pool start=$start_ip_addr,end=$end_ip_addr --gateway=$self_gateway
+
+## add interface to router
+neutron router-interface-add router1 private_subnet
 neutron router-gateway-set router1 public
+
+
