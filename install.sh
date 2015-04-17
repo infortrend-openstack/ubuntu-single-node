@@ -44,7 +44,7 @@ apt-get install -y rabbitmq-server
 rabbitmqctl change_password guest rabbit
 
 ## MySQL server
-## Install MySQL server and related software
+## Install MySQL server and related softwa**re
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password '$mysql_pass''
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password '$mysql_pass''
 apt-get install -y mysql-server python-mysqldb
@@ -61,6 +61,8 @@ character-set-server = utf8" $tempfile
 
 ## Restart MySQL service
 service mysql restart
+
+sleep 5
 
 ## Other Support Packages
 apt-get install -y ntp vlan bridge-utils
@@ -124,7 +126,9 @@ sed -i "s/your_ip/$self_ip/g" $tempfile
 
 ## Restart the keystone service and sync the database
 service keystone restart
+sleep 5
 keystone-manage db_sync
+sleep 5
 
 ## Export the variable to run initial keystone commands
 export OS_SERVICE_TOKEN=ADMIN
@@ -192,6 +196,7 @@ sed -i "s/your_ip/$self_ip/g" $tempfile
 ## Restart Glance services
 service glance-api restart
 service glance-registry restart
+sleep 5
 
 ## Sync the database
 glance-manage db_sync
@@ -224,6 +229,7 @@ nova-manage db sync
 
 ## Restart all nova services
 service nova-api restart ;service nova-cert restart; service nova-consoleauth restart ;service nova-scheduler restart;service nova-conductor restart; service nova-novncproxy restart; service nova-compute restart; service nova-console restart
+sleep 10
 
 ## Test the Nova installation using the following command
 nova-manage service list
@@ -277,20 +283,6 @@ ovs-vsctl add-br br-ex
 #ovs-vsctl add-port br-eth1 eth1
 ovs-vsctl add-port br-ex eth0
 
-## Edit /etc/network/interfaces
-tempfile=/etc/network/interfaces
-test -f $tempfile.orig || cp $tempfile $tempfile.orig
-rm $tempfile
-touch $tempfile
-cp interfaces /etc/network/
-sed -i "s/your_ip/$self_ip/g" $tempfile
-sed -i "s/your_netmask/$self_netmask/g" $tempfile
-sed -i "s/your_gateway/$self_gateway/g" $tempfile
-
-## restart network interfaces
-ifdown eth0 && ifup eth0
-ifdown br-ex && ifup br-ex
-
 ## According to our set up all traffic belonging to External network will be bridged to eth2 and all traffic of Intnet1 will be bridged to eth1. If you have only one interface(eth0) and would like to use it for all networking then please have a look at https://fosskb.wordpress.com/2014/06/10/managing-openstack-internaldataexternal-network-in-one-interface.
 
 ## Edit /etc/neutron/metadata_agent.ini 
@@ -320,6 +312,7 @@ neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neu
 
 ## Restart all Neutron services
 service neutron-server restart; service neutron-plugin-openvswitch-agent restart;service neutron-metadata-agent restart; service neutron-dhcp-agent restart; service neutron-l3-agent restart
+sleep 5
 
 ## Check if the services are running. Run the following command
 neutron agent-list
@@ -371,6 +364,7 @@ cinder-manage db sync
 
 ## Restart all the Cinder services
 service cinder-scheduler restart;service cinder-api restart;service cinder-volume restart;service tgt restart
+sleep 5
 
 ## Create a volume to test the setup
 #cinder create --display-name myVolume 1
@@ -393,3 +387,31 @@ apt-get install -y openstack-dashboard
 ## Password: ADMIN
 
 
+## Edit /etc/network/interfaces
+tempfile=/etc/network/interfaces
+test -f $tempfile.orig || cp $tempfile $tempfile.orig
+rm $tempfile
+touch $tempfile
+cp interfaces /etc/network/
+sed -i "s/your_ip/$self_ip/g" $tempfile
+sed -i "s/your_netmask/$self_netmask/g" $tempfile
+sed -i "s/your_gateway/$self_gateway/g" $tempfile
+
+## restart network interfaces
+ifdown eth0 && ifup eth0
+ifdown br-ex && ifup br-ex
+
+## create Net Service!
+echo "Start to create Net service, Please enter external network in CIDR (ex:192.168.1.0/24, 172.27.112.0/20)"
+read ext_ip_addr
+echo "Please enter floating IP start from..(ex:192.168.1.200, 172.27.120.200)"
+read start_ip_addr
+echo "Please enter floating IP End in(ex:192.168.1.250, 172.27.120.250)"
+read end_ip_addr
+neutron router-create router1
+neutron net-create private
+neutron subnet-create private 10.0.0.0/24 --name private_subnet
+neutron router-interface-add router1 private_subnet
+neutron net-create public --router:external=True
+neutron subnet-create public $ext_ip_addr --name public_subnet --enable_dhcp=False --allocation-pool start=$start_ip_addr,end=$end_ip_addr --gateway=$self_gateway
+neutron router-gateway-set router1 public
