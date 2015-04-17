@@ -36,7 +36,7 @@ echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu" \
 apt-get update && apt-get -y upgrade
 
 ## Note: Reboot is needed only if kernel is updated
-#reboot 
+#reboot
 
 echo "------------------ Install RabiitMQ Server ------------------"
 sleep 3
@@ -197,7 +197,7 @@ keystone user-role-add --user=glance --tenant=service --role=admin
 keystone service-create --name=glance --type=image --description="Glance Image Service"
 keystone endpoint-create --service=glance --publicurl=http://$self_ip:9292 --internalurl=http://$self_ip:9292 --adminurl=http://$self_ip:9292
 
-## Edit /etc/glance/glance-api.conf 
+## Edit /etc/glance/glance-api.conf
 tempfile=/etc/glance/glance-api.conf
 test -f $tempfile.orig || cp $tempfile $tempfile.orig
 rm $tempfile
@@ -205,7 +205,7 @@ touch $tempfile
 cp glance-api.conf /etc/glance
 sed -i "s/your_ip/$self_ip/g" $tempfile
 
-## Edit /etc/glance/glance-registry.conf 
+## Edit /etc/glance/glance-registry.conf
 tempfile=/etc/glance/glance-registry.conf
 test -f $tempfile.orig || cp $tempfile $tempfile.orig
 rm $tempfile
@@ -293,7 +293,7 @@ sed -i "s/your_ip/$self_ip/g" $tempfile
 keystone_service_tenant_id=$(keystone tenant-list | grep '^.*|\s*service\s*|.*$' | awk '{print $2}')
 sed -i "s/service_id/$keystone_service_tenant_id/g" $tempfile
 
-## Edit /etc/neutron/plugins/ml2/ml2_conf.ini 
+## Edit /etc/neutron/plugins/ml2/ml2_conf.ini
 tempfile=/etc/neutron/plugins/ml2/ml2_conf.ini
 test -f $tempfile.orig || cp $tempfile $tempfile.orig
 rm $tempfile
@@ -311,7 +311,7 @@ ovs-vsctl add-port br-ex eth0
 
 ## According to our set up all traffic belonging to External network will be bridged to eth2 and all traffic of Intnet1 will be bridged to eth1. If you have only one interface(eth0) and would like to use it for all networking then please have a look at https://fosskb.wordpress.com/2014/06/10/managing-openstack-internaldataexternal-network-in-one-interface.
 
-## Edit /etc/neutron/metadata_agent.ini 
+## Edit /etc/neutron/metadata_agent.ini
 tempfile=/etc/neutron/metadata_agent.ini
 test -f $tempfile.orig || cp $tempfile $tempfile.orig
 rm $tempfile
@@ -459,5 +459,3 @@ neutron subnet-create public $ext_ip_addr --name public_subnet --enable_dhcp=Fal
 ## add interface to router
 neutron router-interface-add router1 private_subnet
 neutron router-gateway-set router1 public
-
-
