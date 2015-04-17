@@ -1,7 +1,6 @@
 ### OpenStack Juno on Ubuntu 14.04 LTS and 14.10 – Single Machine Setup
 ### Install Ubuntu with partitioning scheme as per your requirements. Note: Run all the commands as super-user. We assume that the IP of the Single machine is 127.0.0.1.
 
-
 ## Enter IP
 echo "Enter All-in-one Ubuntu node IP (default 127.0.0.1)"
 read self_ip
