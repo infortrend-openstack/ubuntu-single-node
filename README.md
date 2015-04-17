@@ -21,8 +21,7 @@ Install
 Useful links
 ============
 
-fosskb openstack juno on ubuntu 14.10
--------------------------------------
+####fosskb openstack juno on ubuntu 14.10
 
   https://fosskb.wordpress.com/2014/10/18/openstack-juno-on-ubuntu-14-10/
   
@@ -34,13 +33,11 @@ fosskb openstack juno on ubuntu 14.10
   
   https://fosskb.wordpress.com/2014/06/25/a-bite-of-virtual-linux-networking/
 
-huawei allinone operation guide
--------------------------------
+####huawei allinone operation guide
 
   http://lingxiankong.github.io/blog/2014/05/12/huawei-allinone-operation-guide/
 
-Ubuntu Openstack Installer
---------------------------
+####Ubuntu Openstack Installer
 
   http://ubuntu-cloud-installer.readthedocs.org/en/latest/index.html#testing-deployments
   
@@ -48,30 +45,23 @@ Ubuntu Openstack Installer
   
   http://www.ubuntu.com/download/cloud/install-ubuntu-openstack
   
-  
-Vietstacker multinode on Ubuntu 14.04
--------------------------------------
+####Vietstacker multinode on Ubuntu 14.04
 
   https://github.com/vietstacker/openstack-juno-multinode-U14.04-v1
 
-OpenStack Juno Srcipted with Neutron on CentOS 7
-------------------------------------------------
+####OpenStack Juno Srcipted with Neutron on CentOS 7
 
   http://behindtheracks.com/2014/11/openstack-juno-scripted-install-with-neutron-on-centos-7/
 
-OpenStack Official Document
----------------------------
+####OpenStack Official Document - User-Guide
 
-  User-Guide
-  
-    http://docs.openstack.org/user-guide/content/openstack_user_guide.html
+  http://docs.openstack.org/user-guide/content/openstack_user_guide.html
 	
-  Command Line Interface
+####OpenStack Official Document - Command Line Interface
   
-    http://docs.openstack.org/cli-reference/content/ch_preface.html
+  http://docs.openstack.org/cli-reference/content/ch_preface.html
   
-Others
-------
+####Others
 
   http://www.cnblogs.com/sammyliu/p/4190843.html
   
