@@ -13,7 +13,7 @@ if [[ "$driver_dir" == "" ]]; then
 fi
 
 cd $driver_dir/infortrend
-find -name "*.py" | xargs -i sed -i "s/from oslo_log import log as logging/from cinder.openstack.common import log as loggin/g" {}
+find -name "*.py" | xargs -i sed -i "s/from oslo_log import log as logging/from cinder.openstack.common import log as logging/g" {}
 find -name "*.py" | xargs -i sed -i "s/from oslo_config import cfg/from oslo.config import cfg/g" {}
 find -name "*.py" | xargs -i sed -i "s/from oslo_utils import timeutils/from cinder.openstack.common import timeutils/g" {}
 find -name "*.py" | xargs -i sed -i "s/from oslo_concurrency import processutils/from cinder.openstack.common import processutils/g" {}

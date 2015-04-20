@@ -450,7 +450,7 @@ neutron router-create router1
 
 ## create private net
 neutron net-create private
-neutron subnet-create private 10.0.0.0/24 --name private_subnet
+neutron subnet-create private 10.0.0.0/24 --name private_subnet --dns-nameserver 8.8.8.8
 
 ## create external net
 neutron net-create public --router:external=True
