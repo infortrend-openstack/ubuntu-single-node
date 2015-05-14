@@ -1,0 +1,31 @@
+# interfaces(5) file used by ifup(8) and ifdown(8)
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet manual
+  up ifconfig $IFACE 0.0.0.0 up
+  up ip link set $IFACE promisc on
+  down ip link set $IFACE promisc off
+  down ifconfig $IFACE down
+
+auto eth1
+iface eth1 inet manual
+  up ifconfig $IFACE 0.0.0.0 up
+  up ip link set $IFACE promisc on
+  down ip link set $IFACE promisc off
+  down ifconfig $IFACE down
+
+auto br-eth0
+iface br-eth0 inet static
+  address your_ip
+  netmask your_netmask
+  gateway your_gateway
+  dns-nameservers your_dns
+
+auto br-ex
+iface br-ex inet static
+  address your_ip_sec
+  netmask your_netmask_sec
+  gateway your_gateway_sec
+  dns-nameservers your_dns
